@@ -6,8 +6,8 @@ services:
       ELASTIC_HOST: http://elasticsearch:9200
       REDIS_HOST: redis://redis:6379
       LOGGING_LEVEL: info
-      DEMO: no
-      PRODUCTION: yes
+      DEMO: yes
+      PRODUCTION: no
     ports:
       - 172.17.0.1:8686:80
     depends_on:
