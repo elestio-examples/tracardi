@@ -1,0 +1,39 @@
+version: "3.3"
+services:
+  tracardi-api:
+    image: tracardi/tracardi-api:0.8.1-rc3
+    environment:
+      ELASTIC_HOST: http://elasticsearch:9200
+      REDIS_HOST: redis://redis:6379
+      LOGGING_LEVEL: info
+      DEMO: no
+      PRODUCTION: yes
+    ports:
+      - 172.17.0.1:8686:80
+    depends_on:
+      - redis
+      - elasticsearch
+
+  tracardi-gui:
+    image: tracardi/tracardi-gui:0.8.1-rc3
+    ports:
+      - 172.17.0.1:8787:80
+    depends_on:
+      - tracardi-api
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    environment:
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      cluster.name: contextElasticSearch
+
+  redis:
+    image: redis
+
+  worker:
+    image: tracardi/update-worker:0.8.1-rc3
+    environment:
+      REDIS_HOST: redis://redis:6379
