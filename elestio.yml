@@ -20,7 +20,8 @@ environments:
     value: "[EMAIL]"
   - key: "ADMIN_PASSWORD"
     value: "random_password"
-
+  - key: "SOFTWARE_VERSION_TAG"
+    value: "0.7.1"    
 config:
   runTime: "dockerCompose"
   version: ""
