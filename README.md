@@ -15,3 +15,9 @@ You can open Tracardi ADMIN UI here:
     URL: https://[CI_CD_DOMAIN]
     email: [ADMIN_EMAIL]
     password: [ADMIN_PASSWORD]
+
+# First use
+
+You'll have to enter this for the api url:
+
+    https://[CI_CD_DOMAIN]:18686
