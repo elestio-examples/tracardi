@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   tracardi-staging-api:
-    image: tracardi/tracardi-api:0.7.1
+    image: tracardi/tracardi-api:${SOFTWARE_VERSION_TAG}
     restart: always
     environment:
       ELASTIC_HOST: http://elasticsearch:9200
@@ -17,7 +17,7 @@ services:
       - elasticsearch
 
   tracardi-gui:
-    image: tracardi/tracardi-gui:0.7.1
+    image: tracardi/tracardi-gui:${SOFTWARE_VERSION_TAG}
     restart: always
     environment:
       API_URL: http://tracardi-staging-api:80
