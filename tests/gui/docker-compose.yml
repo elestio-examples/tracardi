@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+  tracardi-staging-api:
+    image: tracardi/tracardi-api:${SOFTWARE_VERSION_TAG}
+    restart: always
+    environment:
+      ELASTIC_HOST: http://elasticsearch:9200
+      REDIS_HOST: redis://redis:6379
+      LOGGING_LEVEL: info
+      LICENSE: ${API_LICENSE}
+      PRODUCTION: "no"
+      TRACK_DEBUG: "yes"
+    ports:
+      - 172.17.0.1:8686:80
+    depends_on:
+      - redis
+      - elasticsearch
+
+  tracardi-gui:
+    image: elestio4test/tracardi-gui:${SOFTWARE_VERSION_TAG}
+    restart: always
+    environment:
+      API_URL: http://tracardi-staging-api:80
+    ports:
+      - 172.17.0.1:8787:80
+    depends_on:
+      - tracardi-staging-api
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    restart: always
+    environment:
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      cluster.name: contextElasticSearch
+    volumes:
+      - ./es_data:/usr/share/elasticsearch/data
+
+  redis:
+    image: redis
+    restart: always
+    volumes:
+      - ./data:/data
