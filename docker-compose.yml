@@ -53,7 +53,7 @@ services:
       MYSQL_DATABASE: tracardi
       MYSQL_PASSWORD: root
     ports:
-      - "3306:3306"
+      - "172.17.0.1:3306:3306"
     volumes:
       - ./mydata:/var/lib/mysql
 
