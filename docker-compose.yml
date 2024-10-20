@@ -6,8 +6,9 @@ services:
     environment:
       ELASTIC_HOST: http://elasticsearch:9200
       REDIS_HOST: redis://redis:6379
+      MYSQL_HOST: mysql
       LOGGING_LEVEL: info
-    #   LICENSE: ${API_LICENSE}
+      #   LICENSE: ${API_LICENSE}
       PRODUCTION: "no"
       TRACK_DEBUG: "yes"
     ports:
@@ -15,6 +16,7 @@ services:
     depends_on:
       - redis
       - elasticsearch
+      - mysql
 
   tracardi-gui:
     image: tracardi/tracardi-gui:${SOFTWARE_VERSION_TAG}
@@ -43,3 +45,38 @@ services:
     restart: always
     volumes:
       - ./data:/data
+
+  mysql:
+    image: elestio/mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tracardi
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mydata:/var/lib/mysql
+
+  worker:
+    image: tracardi/update-worker:${SOFTWARE_VERSION_TAG}
+    environment:
+      ELASTIC_HOST: http://elasticsearch:9200
+      REDIS_HOST: redis://redis:6379
+      MYSQL_HOST: mysql
+    depends_on:
+      - redis
+      - elasticsearch
+      - mysql
+
+  apm:
+    image: tracardi/apm:${SOFTWARE_VERSION_TAG}
+    environment:
+      ELASTIC_HOST: http://elasticsearch:9200
+      REDIS_HOST: redis://redis:6379
+      MYSQL_HOST: mysql
+      MODE: "worker"
+      PAUSE: 15
+    depends_on:
+      - redis
+      - elasticsearch
+      - mysql
